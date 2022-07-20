@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using EntityFrameworkTest.Data.Model;
-using Microsoft.Extensions.Configuration;
+﻿using EntityFrameworkTest.Data.Model;
 using EntityFrameworkTest.Model.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace EntityFrameworkTest.DataAccess
 {
@@ -30,7 +28,7 @@ namespace EntityFrameworkTest.DataAccess
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Address>().HasKey(a => new { a.Line1, a.City, a.Postcode });
-            modelBuilder.Entity<Payment>().HasOne(p => p.AssociatedUser).WithMany(u => u.PaymentsMade).HasForeignKey(p => p.AdeptReference).HasPrincipalKey(u=> u.AdeptReference);
+            modelBuilder.Entity<Payment>().HasOne(p => p.AssociatedUser).WithMany(u => u.PaymentsMade).HasForeignKey(p => p.AdeptReference).HasPrincipalKey(u => u.AdeptReference);
 
 
             modelBuilder.Entity<Phone>().HasOne<User>().WithMany(u => u.Phones).HasForeignKey(p => p.owner).OnDelete(DeleteBehavior.Cascade);
