@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UserPayment.API.Models;
 
 namespace UserPayment.API
@@ -9,8 +7,6 @@ namespace UserPayment.API
     public class UsersDataStore
     {
         public List<UserDto> Users { get; set; }
-
-        public static UsersDataStore Current { get; } = new UsersDataStore();
 
         public UsersDataStore()
         {

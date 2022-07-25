@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using UserPayment.API.Entities;
 using UserPayment.API.Models;
+using UserPayment.API.Services;
 
 namespace UserPayment.API.Controllers
 {
@@ -12,66 +16,75 @@ namespace UserPayment.API.Controllers
     [Route("api/userpayments")]
     public class UserPaymentsController : ControllerBase
     {
-        [HttpGet]
-        public JsonResult GetUserPayments()
-        {
-           return new JsonResult(UsersDataStore.Current.Users);
-        }
-        [HttpGet("{AccountNumber}", Name ="GetSingleUser")]
-        public ActionResult<UserDto> GetSingleUser(string AccountNumber)
-        {
-            var UserToReturn = UsersDataStore.Current.Users.FirstOrDefault(u => u.AccountNumber == AccountNumber);
+        private readonly ILogger<UserPaymentsController> logger;
+        private readonly IUserPaymentInfoRepository userPaymentInfoRepository;
+        private readonly IMapper mapper;
 
-            if (UserToReturn == null)
+        public UserPaymentsController(ILogger<UserPaymentsController> logger, IUserPaymentInfoRepository paymentInfoRepository, IMapper mapper)
+        {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.userPaymentInfoRepository = paymentInfoRepository ?? throw new ArgumentNullException(nameof(paymentInfoRepository));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserWithoutPaymentsDto>>> GetUsers()
+        {
+            var userEntities = await userPaymentInfoRepository.GetUsersAsync();
+
+            return Ok(mapper.Map<IEnumerable<UserWithoutPaymentsDto>>(userEntities));
+        }
+        [HttpGet("{AccountNumber}", Name = "GetSingleUser")]
+        public async Task<IActionResult> GetSingleUser(string AccountNumber, bool includePaymentsMade = false)
+        {
+            var userToReturn = await userPaymentInfoRepository.GetUserAsync(AccountNumber, includePaymentsMade);
+            if (userToReturn == null)
             {
                 return NotFound();
             }
-
-            return Ok(UserToReturn);
+            if (includePaymentsMade)
+            {
+                return Ok(mapper.Map<UserDto>(userToReturn));
+            }
+            else
+            {
+                return Ok(mapper.Map<UserWithoutPaymentsDto>(userToReturn));
+            }
         }
         [HttpPost]
-        public ActionResult<UserDto> CreateUser(UserForCreationDto user)
+        public async Task<ActionResult<UserDto>> CreateUser(UserForCreationDto user)
         {
+            var finalUser = mapper.Map<User>(user);
 
-            var finalUser = new UserDto()
-            {
-                AccountName = user.AccountName,
-                AccountNumber = user.AccountNumber,
-                AdeptReference = user.AdeptReference,
-                Balance = user.Balance,
-                DateOfBirth = user.DateOfBirth
-            };
-            UsersDataStore.Current.Users.Add(finalUser);
+            userPaymentInfoRepository.AddUser(finalUser);
 
-            return CreatedAtRoute("GetSingleUser", new { finalUser.AccountNumber }, finalUser);
+            await userPaymentInfoRepository.SaveChangesAsync();
+
+            var createdUserToReturn = mapper.Map<UserDto>(finalUser);
+
+            return CreatedAtRoute("GetSingleUser", new { createdUserToReturn.AccountNumber }, createdUserToReturn);
         }
         [HttpPut("{accountnumber}")]
-        public ActionResult UpdateUser(string AccountNumber, UserForUpdateDto user)
+        public async Task<ActionResult> UpdateUser(string AccountNumber, UserForUpdateDto user)
         {
-            var userFromStore = UsersDataStore.Current.Users.FirstOrDefault(u => u.AccountNumber == AccountNumber);
-            if (userFromStore == null)
+            var userEntity = await userPaymentInfoRepository.GetUserAsync(AccountNumber, true);
+            if (userEntity == null)
             {
                 return NotFound();
             }
+            mapper.Map(user, userEntity);
 
-            userFromStore.AccountName = user.AccountName;
-            userFromStore.AdeptReference = user.AdeptReference;
-            userFromStore.Balance = user.Balance;
-            userFromStore.DateOfBirth = user.DateOfBirth;
+            await userPaymentInfoRepository.SaveChangesAsync();
 
             return NoContent();
 
         }
-        [HttpPatch]
-        public ActionResult PartiallyUpdateUser(string accountNumber, JsonPatchDocument<UserForUpdateDto> patchDocument)
+        [HttpPatch("{accountNumber}")]
+        public async Task<ActionResult> PartiallyUpdateUser(string accountNumber, JsonPatchDocument<UserForUpdateDto> patchDocument)
         {
-            var userFromStore = UsersDataStore.Current.Users.FirstOrDefault(u => u.AccountNumber == accountNumber);
-            if (userFromStore == null)
-            {
-                return NotFound();
-            }
+            var userEntity = await userPaymentInfoRepository.GetUserAsync(accountNumber, true);
 
-            var userToPatch = new UserForUpdateDto() { AccountName = userFromStore.AccountName, AdeptReference = userFromStore.AdeptReference, Balance = userFromStore.Balance, DateOfBirth = userFromStore.DateOfBirth };
+            var userToPatch = mapper.Map<UserForUpdateDto>(userEntity);
 
             patchDocument.ApplyTo(userToPatch, ModelState);
 
@@ -83,12 +96,21 @@ namespace UserPayment.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+            mapper.Map(userToPatch, userEntity);
+            await userPaymentInfoRepository.SaveChangesAsync();
+            return NoContent();
+        }
 
-            userFromStore.AccountName = userToPatch.AccountName;
-            userFromStore.AdeptReference = userToPatch.AdeptReference;
-            userFromStore.Balance = userToPatch.Balance;
-            userFromStore.DateOfBirth = userToPatch.DateOfBirth;
-
+        [HttpDelete("{accountNumber}")]
+        public async Task<ActionResult> DeleteUser(string accountNumber)
+        {
+            var userEntity = await userPaymentInfoRepository.GetUserAsync(accountNumber, true);
+            if (userEntity == null)
+            {
+                return NotFound();
+            }
+            userPaymentInfoRepository.DeleteUser(userEntity);
+            await userPaymentInfoRepository.SaveChangesAsync();
             return NoContent();
         }
     }

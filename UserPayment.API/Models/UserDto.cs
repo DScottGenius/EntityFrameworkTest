@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace UserPayment.API.Models
 {
@@ -16,6 +14,9 @@ namespace UserPayment.API.Models
 
         public string AdeptReference { get; set; }
 
+        public List<PaymentDto> PaymentsMade { get; set; }
+
+        public string DebtType { get; set; }
 
     }
 }

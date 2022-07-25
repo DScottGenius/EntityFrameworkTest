@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using UserPayment.API.DbContexts;
+using UserPayment.API.Services;
 
 namespace UserPayment.API
 {
@@ -19,12 +23,17 @@ namespace UserPayment.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options => 
+
+            services.AddControllers(options =>
             {
                 options.ReturnHttpNotAcceptable = true;
             }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
             services.AddSingleton<FileExtensionContentTypeProvider>();
+            services.AddSingleton<UsersDataStore>();
+            services.AddDbContext<UserPaymentDbContext>(dbContextOptions => dbContextOptions.UseSqlServer(Configuration.GetConnectionString("MainDb")));
+            services.AddScoped<IUserPaymentInfoRepository, UserPaymentInfoRepository>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

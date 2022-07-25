@@ -7,30 +7,39 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkTest", "Enti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkTest.Model", "EntityFrameworkTest.Data\EntityFrameworkTest.Model.csproj", "{59EFAB91-67DB-47B4-9688-C664D97E8A04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkTest.DataAccess", "EntityFrameworkTest.DataAccess\EntityFrameworkTest.DataAccess.csproj", "{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkTest.DataAccess", "EntityFrameworkTest.DataAccess\EntityFrameworkTest.DataAccess.csproj", "{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserPayment.API", "UserPayment.API\UserPayment.API.csproj", "{46BB294E-5BE3-4D91-A118-BC552ED1CA10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserPayment.API", "UserPayment.API\UserPayment.API.csproj", "{46BB294E-5BE3-4D91-A118-BC552ED1CA10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Production|Any CPU = Production|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0485E226-A3B7-48D7-B500-D468454D8205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0485E226-A3B7-48D7-B500-D468454D8205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0485E226-A3B7-48D7-B500-D468454D8205}.Production|Any CPU.ActiveCfg = Release|Any CPU
+		{0485E226-A3B7-48D7-B500-D468454D8205}.Production|Any CPU.Build.0 = Release|Any CPU
 		{0485E226-A3B7-48D7-B500-D468454D8205}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0485E226-A3B7-48D7-B500-D468454D8205}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59EFAB91-67DB-47B4-9688-C664D97E8A04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59EFAB91-67DB-47B4-9688-C664D97E8A04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59EFAB91-67DB-47B4-9688-C664D97E8A04}.Production|Any CPU.ActiveCfg = Release|Any CPU
+		{59EFAB91-67DB-47B4-9688-C664D97E8A04}.Production|Any CPU.Build.0 = Release|Any CPU
 		{59EFAB91-67DB-47B4-9688-C664D97E8A04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59EFAB91-67DB-47B4-9688-C664D97E8A04}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}.Production|Any CPU.ActiveCfg = Release|Any CPU
+		{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}.Production|Any CPU.Build.0 = Release|Any CPU
 		{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8A91555-C3D4-43BA-ABCE-DAFD44E20705}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46BB294E-5BE3-4D91-A118-BC552ED1CA10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46BB294E-5BE3-4D91-A118-BC552ED1CA10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46BB294E-5BE3-4D91-A118-BC552ED1CA10}.Production|Any CPU.ActiveCfg = Production|Any CPU
+		{46BB294E-5BE3-4D91-A118-BC552ED1CA10}.Production|Any CPU.Build.0 = Production|Any CPU
 		{46BB294E-5BE3-4D91-A118-BC552ED1CA10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46BB294E-5BE3-4D91-A118-BC552ED1CA10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "8b148eea-878f-4832-9f3b-b8d03f26a12c",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CreateUser",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"AccountName\" : \"David Scott\",\r\n    \"AccountNumber\" : \"129596\",\r\n    \"AdeptReference\" : \"A238835\",\r\n    \"Balance\" : \"12950\",\r\n    \"DateOfBirth\" : \"1995/5/18\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/userpayments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"userpayments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PatchUser",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n    \"op\" : \"replace\",\r\n    \"path\" : \"/AccountName\",\r\n    \"value\" : \"Updated David\"\r\n    }\r\n]"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/userpayments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"userpayments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUser",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/userpayments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"userpayments"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
