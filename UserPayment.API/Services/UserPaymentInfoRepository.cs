@@ -45,6 +45,31 @@ namespace UserPayment.API.Services
             return await context.Users.OrderBy(u => u.AccountNumber).ToListAsync();
 
         }
+        public async Task<(IEnumerable<User>, PaginationMetadata)> GetUsersAsync(string name, string searchQuery, int pageNumber, int pageSize)
+        {
+
+
+            var collection = context.Users as IQueryable<User>;
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                name = name.Trim();
+                collection = collection.Where(u => u.AccountName == name);
+            }
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery = searchQuery.Trim();
+
+                collection = collection.Where(u => u.AccountName.Contains(searchQuery) || u.DebtType.Contains(searchQuery));
+
+            }
+
+            var totalCount = await collection.CountAsync();
+            var pageMeta = new PaginationMetadata(totalCount, pageSize, pageNumber);
+            var collectionToReturn = await collection.OrderBy(u => u.AccountNumber).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
+            return (collectionToReturn, pageMeta);
+        }
 
         public async Task<bool> UserExistsAsync(string accountNumber)
         {

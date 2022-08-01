@@ -8,6 +8,7 @@ namespace UserPayment.API.Services
     {
         Task<IEnumerable<User>> GetUsersAsync();
         Task<User> GetUserAsync(string accountNumber, bool includePaymentsMade);
+        Task<(IEnumerable<User>, PaginationMetadata)> GetUsersAsync(string name, string searchQuery, int pageNumber, int pageSize);
 
         Task<IEnumerable<Payment>> GetPaymentsAsync();
         Task<Payment> GetPaymentAsync(string adeptReference);
@@ -18,6 +19,6 @@ namespace UserPayment.API.Services
         void DeleteUser(User userToDelete);
 
         Task<bool> SaveChangesAsync();
-        
+
     }
 }

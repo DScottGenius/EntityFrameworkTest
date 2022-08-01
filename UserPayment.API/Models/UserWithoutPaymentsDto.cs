@@ -13,5 +13,7 @@ namespace UserPayment.API.Models
 
         public string AdeptReference { get; set; }
 
+        public string DebtType { get; set; }
+
     }
 }

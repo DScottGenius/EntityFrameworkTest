@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 using UserPayment.API.DbContexts;
 using UserPayment.API.Services;
 
@@ -28,9 +30,28 @@ namespace UserPayment.API
             {
                 options.ReturnHttpNotAcceptable = true;
             }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
-
+            services.AddAuthentication("Bearer").AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Authentication:Issuer"],
+                    ValidAudience = Configuration["Authentication:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["Authentication:SecretForKey"]))
+                };
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("MustBeDavid", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("given_name", "David");
+                    policy.RequireClaim("family_name", "Scott");
+                });
+            });
             services.AddSingleton<FileExtensionContentTypeProvider>();
-            services.AddSingleton<UsersDataStore>();
             services.AddDbContext<UserPaymentDbContext>(dbContextOptions => dbContextOptions.UseSqlServer(Configuration.GetConnectionString("MainDb")));
             services.AddScoped<IUserPaymentInfoRepository, UserPaymentInfoRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -47,6 +68,8 @@ namespace UserPayment.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
